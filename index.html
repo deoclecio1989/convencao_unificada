@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convenção Unificada V&P e DNMS</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+        }
+        
+        .countdown-box {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .ticket-card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .ticket-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .camiseta-option {
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .camiseta-option.selected {
+            border-color: #4b6cb7;
+            background-color: #eef2ff;
+        }
+        
+        .payment-method {
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .checkmark {
+            display: none;
+        }
+        
+        .payment-method.selected {
+            border-color: #4b6cb7;
+            background-color: #eef2ff;
+        }
+        
+        .payment-method.selected .checkmark {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header/Navigation -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <i class="fas fa-church text-3xl text-blue-600 mr-3"></i>
+                <h1 class="text-xl font-bold text-gray-800">Convenção Unificada</h1>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <a href="#sobre" class="text-gray-600 hover:text-blue-600 font-medium">Sobre</a>
+                <a href="#programacao" class="text-gray-600 hover:text-blue-600 font-medium">Programação</a>
+                <a href="#local" class="text-gray-600 hover:text-blue-600 font-medium">Local</a>
+                <a href="#contato" class="text-gray-600 hover:text-blue-600 font-medium">Contato</a>
+            </nav>
+            <button class="md:hidden text-gray-600">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">Convenção Unificada V&P e DNMS</h1>
+            <p class="text-xl font-bold md:text-3xl mb-4 max-w-3xl mx-auto">Tema: Jovem Nacional em força total</p>
+            <p class="text-xl font-semibold md:text-2xl mb-2 max-w-3xl mx-auto">Lema: Jovens que louvam, nações que se curvam</p>
+            <p style="font-style: italic; font-size: 1rem;" class="text-xl font-medium mb-8 max-w-4xl mx-auto">"Todas as nações que fizeste virão, prostrar-se-ão diante de ti, Senhor, e glorificarão o teu nome" (Salmos 86:9)</p>
+            
+            <div class="max-w-md mx-auto bg-white rounded-lg p-6 shadow-lg">
+                <div class="flex justify-between mb-4">
+                    <div class="countdown-box rounded-lg p-3 text-center w-1/4 mx-1">
+                        <div class="text-2xl font-bold text-blue-800" id="days">00</div>
+                        <div class="text-xs text-gray-600">Dias</div>
+                    </div>
+                    <div class="countdown-box rounded-lg p-3 text-center w-1/4 mx-1">
+                        <div class="text-2xl font-bold text-blue-800" id="hours">00</div>
+                        <div class="text-xs text-gray-600">Horas</div>
+                    </div>
+                    <div class="countdown-box rounded-lg p-3 text-center w-1/4 mx-1">
+                        <div class="text-2xl font-bold text-blue-800" id="minutes">00</div>
+                        <div class="text-xs text-gray-600">Minutos</div>
+                    </div>
+                    <div class="countdown-box rounded-lg p-3 text-center w-1/4 mx-1">
+                        <div class="text-2xl font-bold text-blue-800" id="seconds">00</div>
+                        <div class="text-xs text-gray-600">Segundos</div>
+                    </div>
+                </div>
+                
+                <button id="openCheckout" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300">
+                    Garanta seu ingresso agora
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="sobre" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Sobre o Evento</h2>
+            
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                    <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DMgbGzEvPa6/?utm_source=ig_embed&amp;utm_campaign=loading" data-instgrm-version="14" style=" background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin: 1px; max-width:540px; min-width:326px; padding:0; width:99.375%; width:-webkit-calc(100% - 2px); width:calc(100% - 2px);"><div style="padding:16px;"> <a href="https://www.instagram.com/p/DMgbGzEvPa6/?utm_source=ig_embed&amp;utm_campaign=loading" style=" background:#FFFFFF; line-height:0; padding:0 0; text-align:center; text-decoration:none; width:100%;" target="_blank"> <div style=" display: flex; flex-direction: row; align-items: center;"> <div style="background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 40px; margin-right: 14px; width: 40px;"></div> <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 100px;"></div> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 60px;"></div></div></div><div style="padding: 19% 0;"></div> <div style="display:block; height:50px; margin:0 auto 12px; width:50px;"><svg width="50px" height="50px" viewBox="0 0 60 60" version="1.1" xmlns="https://www.w3.org/2000/svg" xmlns:xlink="https://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-511.000000, -20.000000)" fill="#000000"><g><path d="M556.869,30.41 C554.814,30.41 553.148,32.076 553.148,34.131 C553.148,36.186 554.814,37.852 556.869,37.852 C558.924,37.852 560.59,36.186 560.59,34.131 C560.59,32.076 558.924,30.41 556.869,30.41 M541,60.657 C535.114,60.657 530.342,55.887 530.342,50 C530.342,44.114 535.114,39.342 541,39.342 C546.887,39.342 551.658,44.114 551.658,50 C551.658,55.887 546.887,60.657 541,60.657 M541,33.886 C532.1,33.886 524.886,41.1 524.886,50 C524.886,58.899 532.1,66.113 541,66.113 C549.9,66.113 557.115,58.899 557.115,50 C557.115,41.1 549.9,33.886 541,33.886 M565.378,62.101 C565.244,65.022 564.756,66.606 564.346,67.663 C563.803,69.06 563.154,70.057 562.106,71.106 C561.058,72.155 560.06,72.803 558.662,73.347 C557.607,73.757 556.021,74.244 553.102,74.378 C549.944,74.521 548.997,74.552 541,74.552 C533.003,74.552 532.056,74.521 528.898,74.378 C525.979,74.244 524.393,73.757 523.338,73.347 C521.94,72.803 520.942,72.155 519.894,71.106 C518.846,70.057 518.197,69.06 517.654,67.663 C517.244,66.606 516.755,65.022 516.623,62.101 C516.479,58.943 516.448,57.996 516.448,50 C516.448,42.003 516.479,41.056 516.623,37.899 C516.755,34.978 517.244,33.391 517.654,32.338 C518.197,30.938 518.846,29.942 519.894,28.894 C520.942,27.846 521.94,27.196 523.338,26.654 C524.393,26.244 525.979,25.756 528.898,25.623 C532.057,25.479 533.004,25.448 541,25.448 C548.997,25.448 549.943,25.479 553.102,25.623 C556.021,25.756 557.607,26.244 558.662,26.654 C560.06,27.196 561.058,27.846 562.106,28.894 C563.154,29.942 563.803,30.938 564.346,32.338 C564.756,33.391 565.244,34.978 565.378,37.899 C565.522,41.056 565.552,42.003 565.552,50 C565.552,57.996 565.522,58.943 565.378,62.101 M570.82,37.631 C570.674,34.438 570.167,32.258 569.425,30.349 C568.659,28.377 567.633,26.702 565.965,25.035 C564.297,23.368 562.623,22.342 560.652,21.575 C558.743,20.834 556.562,20.326 553.369,20.18 C550.169,20.033 549.148,20 541,20 C532.853,20 531.831,20.033 528.631,20.18 C525.438,20.326 523.257,20.834 521.349,21.575 C519.376,22.342 517.703,23.368 516.035,25.035 C514.368,26.702 513.342,28.377 512.574,30.349 C511.834,32.258 511.326,34.438 511.181,37.631 C511.035,40.831 511,41.851 511,50 C511,58.147 511.035,59.17 511.181,62.369 C511.326,65.562 511.834,67.743 512.574,69.651 C513.342,71.625 514.368,73.296 516.035,74.965 C517.703,76.634 519.376,77.658 521.349,78.425 C523.257,79.167 525.438,79.673 528.631,79.82 C531.831,79.965 532.853,80.001 541,80.001 C549.148,80.001 550.169,79.965 553.369,79.82 C556.562,79.673 558.743,79.167 560.652,78.425 C562.623,77.658 564.297,76.634 565.965,74.965 C567.633,73.296 568.659,71.625 569.425,69.651 C570.167,67.743 570.674,65.562 570.82,62.369 C570.966,59.17 571,58.147 571,50 C571,41.851 570.966,40.831 570.82,37.631"></path></g></g></g></svg></div><div style="padding-top: 8px;"> <div style=" color:#3897f0; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:550; line-height:18px;">Ver essa foto no Instagram</div></div><div style="padding: 12.5% 0;"></div> <div style="display: flex; flex-direction: row; margin-bottom: 14px; align-items: center;"><div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(0px) translateY(7px);"></div> <div style="background-color: #F4F4F4; height: 12.5px; transform: rotate(-45deg) translateX(3px) translateY(1px); width: 12.5px; flex-grow: 0; margin-right: 14px; margin-left: 2px;"></div> <div style="background-color: #F4F4F4; border-radius: 50%; height: 12.5px; width: 12.5px; transform: translateX(9px) translateY(-18px);"></div></div><div style="margin-left: 8px;"> <div style=" background-color: #F4F4F4; border-radius: 50%; flex-grow: 0; height: 20px; width: 20px;"></div> <div style=" width: 0; height: 0; border-top: 2px solid transparent; border-left: 6px solid #f4f4f4; border-bottom: 2px solid transparent; transform: translateX(16px) translateY(-4px) rotate(30deg)"></div></div><div style="margin-left: auto;"> <div style=" width: 0px; border-top: 8px solid #F4F4F4; border-right: 8px solid transparent; transform: translateY(16px);"></div> <div style=" background-color: #F4F4F4; flex-grow: 0; height: 12px; width: 16px; transform: translateY(-4px);"></div> <div style=" width: 0; height: 0; border-top: 8px solid #F4F4F4; border-left: 8px solid transparent; transform: translateY(-4px) translateX(8px);"></div></div></div> <div style="display: flex; flex-direction: column; flex-grow: 1; justify-content: center; margin-bottom: 24px;"> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; margin-bottom: 6px; width: 224px;"></div> <div style=" background-color: #F4F4F4; border-radius: 4px; flex-grow: 0; height: 14px; width: 144px;"></div></div></a><p style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; line-height:17px; margin-bottom:0; margin-top:8px; overflow:hidden; padding:8px 0 7px; text-align:center; text-overflow:ellipsis; white-space:nowrap;"><a href="https://www.instagram.com/p/DMgbGzEvPa6/?utm_source=ig_embed&amp;utm_campaign=loading" style=" color:#c9c8cd; font-family:Arial,sans-serif; font-size:14px; font-style:normal; font-weight:normal; line-height:17px; text-decoration:none;" target="_blank">Uma publicação compartilhada por Vencedores Pentecostais 🇧🇷 (@jovensipub.nacional)</a></p></div></blockquote>
+                        <script async src="//www.instagram.com/embed.js"></script>
+                </div>
+                <div class="md:w-1/2">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800">Uma experiência transformadora</h3>
+                    <p class="text-gray-600 mb-4">
+                        A Convenção Unificada V&P e DNMS é um evento especial que reúne dois departamento da <b>Igreja Pentecostal Unida do Brasil</b> em caráter Nacional, que são os <b>Vencedores Pentecostais</b> e <b>Música Sacra</b>, juntos para um tempo de adoração, ensino da Palavra e comunhão.
+                    </p>
+                    <p class="text-gray-600 mb-4">
+                        Durante dois dias, teremos preletores renomados, momentos poderosos de adoração, workshops e muito mais, tudo isso para o crescimento espiritual.
+                    </p>
+                    <p class="text-gray-600 mb-6">
+                        Este é um momento único para renovar sua fé, conectar-se com outros irmãos e experimentar o mover de Deus em sua vida.
+                    </p>
+                    <div class="flex flex-wrap">
+                        <div class="w-full sm:w-1/2 mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-calendar-check text-blue-600 mr-3 text-xl"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Data</h4>
+                                    <p class="text-gray-600">04 e 05 de Outubro, 2025</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full sm:w-1/2 mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-map-marker-alt text-blue-600 mr-3 text-xl"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Local</h4>
+                                    <p class="text-gray-600">Recanto da Paz - Joinville/SC</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full sm:w-1/2 mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-users text-blue-600 mr-3 text-xl"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Está incluso</h4>
+                                    <p class="text-gray-600">Alimentação e pernoite</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full sm:w-1/2 mb-4">
+                            <div class="flex items-center">
+                                <i class="fas fa-microphone text-blue-600 mr-3 text-xl"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Preletores</h4>
+                                    <p class="text-gray-600">Pr Edino Zonta (AM)</p>
+                                    <p class="text-gray-600">Pr Augusto Câmara (AM)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule Section -->
+    <section id="programacao" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Programação</h2>
+            
+            <!-- <div class="max-w-4xl mx-auto">
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-600 border-b pb-2">Dia 1 - 15/11/2023</h3>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">18:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Credenciamento</h4>
+                                <p class="text-gray-600">Recepção e entrega de materiais</p>
+                            </div>
+                        </div>
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">19:30</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Culto de Abertura</h4>
+                                <p class="text-gray-600">Momento de adoração e palavra inicial</p>
+                            </div>
+                        </div>
+                        <div class="p-6 flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">21:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Confratenização</h4>
+                                <p class="text-gray-600">Momento de comunhão entre os participantes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-600 border-b pb-2">Sábado - 04/10/2025</h3>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">07:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Café da Manhã</h4>
+                                <p class="text-gray-600">Será servido das 07:00 as 08:30</p>
+                            </div>
+                        </div>
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">09:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Palestra 1</h4>
+                                <p class="text-gray-600">Para todos os congressistas</p>
+                            </div>
+                        </div>
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">10:30</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Palestra 2</h4>
+                                <p class="text-gray-600">Para todos os congressistas</p>
+                            </div>
+                        </div>
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">12:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Almoço</h4>
+                                <p class="text-gray-600">Será servido das 12:00 as 13:30</p>
+                            </div>
+                        </div>
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">14:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Festival de Música</h4>
+                                <p class="text-gray-600">Apresentação dos finalistas classificados na seletiva nacional</p>
+                            </div>
+                        </div>
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">18:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Jantar</h4>
+                                <p class="text-gray-600">Será servido das 18:00 as 19:30</p>
+                            </div>
+                        </div>
+                        <div class="p-6 flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">19:30</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Culto de Avivamento</h4>
+                                <p class="text-gray-600">Momento poderoso de adoração e palavra</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-blue-600 border-b pb-2">Domingo - 05/10/2025</h3>
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">07:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Café da Manhã</h4>
+                                <p class="text-gray-600">Será servido das 07:00 as 08:30</p>
+                            </div>
+                        </div>
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">09:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Palestra 1</h4>
+                                <p class="text-gray-600">Para todos os congressistas</p>
+                            </div>
+                        </div>
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">10:30</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Palestra 2</h4>
+                                <p class="text-gray-600">Para todos os congressistas</p>
+                            </div>
+                        </div>
+                        <div class="p-6 border-b flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">12:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Almoço</h4>
+                                <p class="text-gray-600">Será servido das 12:00 as 13:30</p>
+                            </div>
+                        </div>
+                        <div class="p-6 flex items-start">
+                            <div class="bg-blue-100 text-blue-800 rounded-full px-4 py-2 mr-4 font-semibold">14:00</div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Culto de Encerramento</h4>
+                                <p class="text-gray-600">Momento de celebração e palavra</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section id="local" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Local do Evento</h2>
+            
+            <div class="flex flex-col md:flex-row">
+                <div class="md:w-1/2 mb-8 md:mb-0 md:pr-8">
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3574.008186095685!2d-48.81905882370407!3d-26.39092317160626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94deb6613ad49cc5%3A0xfa0c2bd3360a04b9!2sRecanto%20da%20Paz%20Joinville!5e0!3m2!1spt-BR!2sbr!4v1747260600641!5m2!1spt-BR!2sbr" 
+                                width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy" class="w-full"></iframe>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="bg-white rounded-lg shadow-lg p-8">
+                        <h3 class="text-2xl font-semibold mb-4 text-gray-800">Recanto da Paz</h3>
+                        <p class="text-gray-600 mb-6">
+                            Local preparado para receber grandes eventos, com dormitórios, refeitório, amplo estacionamento e de fácil acesso.
+                        </p>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">Endereço</h4>
+                            <p class="text-gray-600">
+                                Rua Waldemiro José Borges, 4911 - Itinga<br>
+                                Joinville - Santa Catarina<br>
+                                CEP: 89235-160
+                            </p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">Estacionamento</h4>
+                            <p class="text-gray-600">
+                                O local possui estacionamento gratuito para todos os participantes do evento.
+                            </p>
+                        </div>
+                        
+                        <!-- <div class="mb-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">Acessibilidade</h4>
+                            <p class="text-gray-600">
+                                O centro de convenções é totalmente acessível, com rampas, elevadores e banheiros adaptados.
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-800 mb-2">Como chegar</h4>
+                            <div class="flex flex-wrap -mx-2">
+                                <div class="w-full sm:w-1/2 px-2 mb-4">
+                                    <div class="bg-gray-100 p-3 rounded-lg">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-bus text-blue-600 mr-3"></i>
+                                            <span class="font-medium">Ônibus</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1">Linhas 101, 205 e 310</p>
+                                    </div>
+                                </div>
+                                <div class="w-full sm:w-1/2 px-2 mb-4">
+                                    <div class="bg-gray-100 p-3 rounded-lg">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-subway text-blue-600 mr-3"></i>
+                                            <span class="font-medium">Metrô</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1">Estação Convenções (Linha 2)</p>
+                                    </div>
+                                </div>
+                                <div class="w-full sm:w-1/2 px-2">
+                                    <div class="bg-gray-100 p-3 rounded-lg">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-car text-blue-600 mr-3"></i>
+                                            <span class="font-medium">Carro</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1">Várias rotas de acesso</p>
+                                    </div>
+                                </div>
+                                <div class="w-full sm:w-1/2 px-2">
+                                    <div class="bg-gray-100 p-3 rounded-lg">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-taxi text-blue-600 mr-3"></i>
+                                            <span class="font-medium">Táxi/App</span>
+                                        </div>
+                                        <p class="text-sm text-gray-600 mt-1">Ponto na entrada principal</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <!-- <section class="py-16 bg-blue-600 text-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Depoimentos</h2>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white bg-opacity-10 rounded-lg p-6 backdrop-filter backdrop-blur-lg">
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Participante" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-semibold">Maria Silva</h4>
+                                <p class="text-blue-200 text-sm">Participante 2022</p>
+                            </div>
+                        </div>
+                        <p class="text-blue-100">
+                            "A Convenção foi uma experiência transformadora para minha vida espiritual. Voltei renovada e com mais amor pela obra de Deus."
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white bg-opacity-10 rounded-lg p-6 backdrop-filter backdrop-blur-lg">
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Participante" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-semibold">João Santos</h4>
+                                <p class="text-blue-200 text-sm">Participante 2022</p>
+                            </div>
+                        </div>
+                        <p class="text-blue-100">
+                            "Os ensinamentos foram profundos e práticos. Aprendi muito sobre como viver minha fé no dia a dia. Recomendo a todos!"
+                        </p>
+                    </div>
+                    
+                    <div class="bg-white bg-opacity-10 rounded-lg p-6 backdrop-filter backdrop-blur-lg">
+                        <div class="flex items-center mb-4">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Participante" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-semibold">Ana Oliveira</h4>
+                                <p class="text-blue-200 text-sm">Participante 2022</p>
+                            </div>
+                        </div>
+                        <p class="text-blue-100">
+                            "A organização foi impecável e a presença de Deus foi sentida em todos os momentos. Mal posso esperar pela próxima edição!"
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> -->
+
+    <!-- Contact Section -->
+    <section id="contato" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Contato</h2>
+            
+            <div class="max-w-4xl mx-auto grid grid-cols-1 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">Entre em contato conosco</h3>
+                    <p class="text-gray-600 mb-6">
+                        Tem dúvidas sobre o evento? Quer saber mais sobre como participar? Entre em contato através dos nossos canais ou preencha o formulário ao lado.
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Whatsapp</h4>
+                                <p class="text-gray-600">(48) 2132-1967 | (92) 99469-8468 | (92) 99195-7942</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Email</h4>
+                                <p class="text-gray-600">ipub.sj@gmail.com</p>
+                            </div>
+                        </div>
+                        
+                        <!-- <div class="flex items-start">
+                            <div class="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Endereço</h4>
+                                <p class="text-gray-600">Rua Defendente Rampinelli, 4440 - Fz Sto Antônio - São José/SC</p>
+                            </div>
+                        </div> -->
+                        
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 text-blue-600 p-3 rounded-full mr-4">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">Horário de Atendimento</h4>
+                                <p class="text-gray-600">Segunda a Sexta, das 9h às 18h</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- <div class="mt-8">
+                        <h4 class="font-semibold text-gray-800 mb-4">Siga-nos nas redes sociais</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition duration-300">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="bg-blue-400 text-white p-3 rounded-full hover:bg-blue-500 transition duration-300">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="bg-pink-600 text-white p-3 rounded-full hover:bg-pink-700 transition duration-300">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition duration-300">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div> -->
+                </div>
+                
+                <!-- Formulário -->
+                <!-- <div>
+                    <form class="bg-gray-50 rounded-lg shadow-md p-6">
+                        <div class="mb-4">
+                            <label for="name" class="block text-gray-700 font-medium mb-2">Nome Completo</label>
+                            <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="phone" class="block text-gray-700 font-medium mb-2">Telefone</label>
+                            <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="subject" class="block text-gray-700 font-medium mb-2">Assunto</label>
+                            <select id="subject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Selecione um assunto</option>
+                                <option value="ingressos">Ingressos</option>
+                                <option value="programacao">Programação</option>
+                                <option value="local">Local do Evento</option>
+                                <option value="outro">Outro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="message" class="block text-gray-700 font-medium mb-2">Mensagem</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                            Enviar Mensagem
+                        </button>
+                    </form>
+                </div> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Perguntas Frequentes</h2>
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="border-b">
+                        <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50">
+                            <span class="font-medium text-gray-800">Qual é a data do evento?</span>
+                            <i class="fas fa-chevron-down text-blue-600"></i>
+                        </button>
+                        <div class="faq-answer px-6 pb-6 hidden">
+                            <p class="text-gray-600">
+                                A Convenção Unificada V&P e DNMS acontecerá nos dias 04 e 05 de Novembro de 2025.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="border-b">
+                        <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50">
+                            <span class="font-medium text-gray-800">Onde posso comprar ingressos?</span>
+                            <i class="fas fa-chevron-down text-blue-600"></i>
+                        </button>
+                        <div class="faq-answer px-6 pb-6 hidden">
+                            <p class="text-gray-600">
+                                Os ingressos podem ser adquiridos diretamente nesta página, através do botão "Garanta seu ingresso agora" ou no dia do evento* (sujeito a disponibilidade da estadia).
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="border-b">
+                        <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50">
+                            <span class="font-medium text-gray-800">Posso dormir no local?</span>
+                            <i class="fas fa-chevron-down text-blue-600"></i>
+                        </button>
+                        <div class="faq-answer px-6 pb-6 hidden">
+                            <p class="text-gray-600">
+                                Sim, os quartos acomodam 6 pessoa. Precisa levar roupa de cama e material de higiene pessoal.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="border-b">
+                        <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50">
+                            <span class="font-medium text-gray-800">Não vou dormir nos local, posso comprar as refeições avulsas?</span>
+                            <i class="fas fa-chevron-down text-blue-600"></i>
+                        </button>
+                        <div class="faq-answer px-6 pb-6 hidden">
+                            <p class="text-gray-600">
+                                Sim, você pode comprar as refeições de maneira avulsa no local no dia do evento.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="border-b">
+                        <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50">
+                            <span class="font-medium text-gray-800">Posso participar do enveto apenas dia?</span>
+                            <i class="fas fa-chevron-down text-blue-600"></i>
+                        </button>
+                        <div class="faq-answer px-6 pb-6 hidden">
+                            <p class="text-gray-600">
+                                O ingresso é para quem irá participar integralmente do evento e terá direito as refeições e pernoite. Nesse caso você deve procurar a equipe da recepção no local evento (valores sujeitos a alterações).
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <button class="faq-question w-full text-left p-6 flex justify-between items-center hover:bg-gray-50">
+                            <span class="font-medium text-gray-800">Qual a política de reembolso?</span>
+                            <i class="fas fa-chevron-down text-blue-600"></i>
+                        </button>
+                        <div class="faq-answer px-6 pb-6 hidden">
+                            <p class="text-gray-600">
+                                Para reembolsos entrar em contato pelo Whatsapp (48) 2132-1967 ou pelo email ipub.sj@gmail.com
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-blue-600 text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-6">Não perca esta oportunidade de renovação espiritual!</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">
+                Garanta já seu ingresso e prepare-se para viver esses dois dias na poderosa presença de Deus.
+            </p>
+            <button id="openCheckoutBottom" class="bg-white hover:bg-gray-100 text-blue-600 font-bold py-3 px-8 rounded-lg text-lg transition duration-300">
+                Comprar Ingresso
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-church text-2xl text-blue-400 mr-3"></i>
+                        <h3 class="text-xl font-bold">Convenção Unificada</h3>
+                    </div>
+                    <p class="text-gray-400">
+                        Um evento de fé, adoração e renovo espiritual.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Links Úteis</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#sobre" class="text-gray-400 hover:text-white transition duration-300">Sobre o Evento</a></li>
+                        <li><a href="#programacao" class="text-gray-400 hover:text-white transition duration-300">Programação</a></li>
+                        <li><a href="#ingressos" class="text-gray-400 hover:text-white transition duration-300">Ingressos</a></li>
+                        <li><a href="#local" class="text-gray-400 hover:text-white transition duration-300">Localização</a></li>
+                        <li><a href="#contato" class="text-gray-400 hover:text-white transition duration-300">Contato</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contato</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="fas fa-map-marker-alt mr-3 text-blue-400"></i>
+                            <span>Rua Defendente Rampinelli, 4440 - Fz Sto Antônio - São José/SC</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-3 text-blue-400"></i>
+                            <span>(48) 2132-1967 <br> (92) 99469-8468 <br> (92) 99195-7942 </span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3 text-blue-400"></i>
+                            <span>ipub.sj@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- <div>
+                    <h4 class="text-lg font-semibold mb-4">Redes Sociais</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="bg-gray-800 hover:bg-blue-600 text-white p-3 rounded-full transition duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 hover:bg-blue-400 text-white p-3 rounded-full transition duration-300">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 hover:bg-pink-600 text-white p-3 rounded-full transition duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="bg-gray-800 hover:bg-red-600 text-white p-3 rounded-full transition duration-300">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h4 class="text-lg font-semibold mb-2">Newsletter</h4>
+                        <div class="flex">
+                            <input type="email" placeholder="Seu email" class="px-4 py-2 rounded-l-lg focus:outline-none text-gray-900 w-full">
+                            <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r-lg transition duration-300">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+            
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 Convenção Unificada V&P e DNMS. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-screen overflow-y-auto">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-gray-800">Finalizar Compra</h3>
+                <button id="closeCheckout" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="p-6">
+                <div class="mb-8">
+                    <h4 class="text-lg font-semibold mb-4 text-gray-800">Resumo do Pedido</h4>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-600">Ingresso Individual</span>
+                            <span class="font-medium">R$ 260,00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Taxa de serviço</span>
+                            <span class="font-medium">R$ 5,00</span>
+                        </div>
+                    </div>
+                    
+                <input type="hidden" id="shirtSize" name="shirtSize" />
+
+                    <!-- <div class="mb-6">
+                        <h5 class="font-medium mb-2 text-gray-700">Adicionar camiseta do evento (+R$ 50,00)</h5>
+                        <div class="flex flex-wrap -mx-2">
+                            <div class="w-1/5 px-2 mb-2">
+                                <button class="camiseta-option w-full py-2 rounded-lg text-center" data-size="PP">
+                                    PP
+                                </button>
+                            </div>
+                            <div class="w-1/5 px-2 mb-2">
+                                <button class="camiseta-option w-full py-2 rounded-lg text-center" data-size="P">
+                                    P
+                                </button>
+                            </div>
+                            <div class="w-1/5 px-2 mb-2">
+                                <button class="camiseta-option w-full py-2 rounded-lg text-center" data-size="M">
+                                    M
+                                </button>
+                            </div>
+                            <div class="w-1/5 px-2 mb-2">
+                                <button class="camiseta-option w-full py-2 rounded-lg text-center" data-size="G">
+                                    G
+                                </button>
+                            </div>
+                            <div class="w-1/5 px-2 mb-2">
+                                <button class="camiseta-option w-full py-2 rounded-lg text-center" data-size="GG">
+                                    GG
+                                </button>
+                            </div>
+                        </div>
+                    </div> -->
+                    
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <div class="flex justify-between font-bold text-lg">
+                            <span class="text-gray-800">Total</span>
+                            <span id="totalAmount" class="text-blue-600">R$ 265,00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="checkoutForm">
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold mb-4 text-gray-800">Dados Pessoais</h4>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label for="fullName" class="block text-gray-700 font-medium mb-2">Nome Completo *</label>
+                                <input type="text" id="fullName" name="fullName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label for="cpf" class="block text-gray-700 font-medium mb-2">CPF *</label>
+                                <input type="text" id="cpf" name="cpf" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="000.000.000-00">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="email" class="block text-gray-700 font-medium mb-2">Email *</label>
+                                <input type="email" id="emailFull" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-gray-700 font-medium mb-2">Telefone *</label>
+                                <input type="tel" id="phoneFull" name="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="(00) 00000-0000">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" id="paymentMethod" name="paymentMethod" />
+
+                    <div class="mb-6">
+                      <h4 class="text-lg font-semibold mb-4 text-gray-800">Forma de Pagamento</h4>
+                      
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <button type="button" class="payment-method w-full p-4 border rounded-lg text-left" data-method="CREDIT_CARD">
+                            <div class="flex items-center">
+                              <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="far fa-credit-card text-blue-600"></i>
+                              </div>
+                              <div>
+                                <h5 class="font-medium">Cartão de Crédito</h5>
+                                <p class="text-sm text-gray-500">Parcelamento em até 12x</p>
+                              </div>
+                              <div class="ml-auto checkmark hidden">
+                                <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                              </div>
+                            </div>
+                          </button>
+                        </div>
+                        <div>
+                          <button type="button" class="payment-method w-full p-4 border rounded-lg text-left" data-method="PIX">
+                            <div class="flex items-center">
+                              <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-qrcode text-blue-600"></i>
+                              </div>
+                              <div>
+                                <h5 class="font-medium">PIX</h5>
+                                <p class="text-sm text-gray-500">Pagamento instantâneo</p>
+                              </div>
+                              <div class="ml-auto checkmark hidden">
+                                <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                              </div>
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Credit Card Form (Initially Hidden) -->
+                    <div id="creditCardForm" class="hidden mb-6">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="mb-4">
+                                <label for="cardNumber" class="block text-gray-700 font-medium mb-2">Número do Cartão *</label>
+                                <input type="text" id="cardNumber" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="0000 0000 0000 0000">
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label for="cardName" class="block text-gray-700 font-medium mb-2">Nome no Cartão *</label>
+                                    <input type="text" id="cardName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                </div>
+                                <div>
+                                    <label for="cardExpiry" class="block text-gray-700 font-medium mb-2">Validade *</label>
+                                    <input type="text" id="cardExpiry" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="MM/AAAA">
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="cardCvv" class="block text-gray-700 font-medium mb-2">CVV *</label>
+                                    <input type="text" id="cardCvv" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="000">
+                                </div>
+                                <div>
+                                    <label for="cardInstallments" class="block text-gray-700 font-medium mb-2">Parcelas *</label>
+                                    <select id="cardInstallments" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PIX Form (Initially Hidden) -->
+                    <div id="pixForm" class="hidden mb-6">
+                        <div class="bg-gray-50 rounded-lg p-4 text-center">
+                            <i class="fas fa-qrcode text-6xl text-blue-600 mb-4"></i>
+                            <p class="text-gray-600 mb-4">Após confirmar a compra, você receberá um QR Code para pagamento via PIX.</p>
+                            <p class="text-sm text-gray-500">O ingresso será liberado após a confirmação do pagamento.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center mb-6">
+                        <input type="checkbox" id="terms" required class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                        <label for="terms" class="ml-2 text-sm text-gray-600">
+                            <!-- Concordo com os <a href="#" class="text-blue-600 hover:underline">Termos de Serviço</a> e <a href="#" class="text-blue-600 hover:underline">Política de Privacidade</a> -->
+                             Ciente que estou adquirindo UM ingresso integral para o evento descrito.
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                        Confirmar Compra
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="p-6 text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-green-500 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Compra realizada com sucesso!</h3>
+                <p class="text-gray-600 mb-6">
+                    Seu ingresso para a Convenção Unificada V&P e DNMS foi reservado. Os detalhes foram enviados para o seu email.
+                </p>
+                <button id="closeSuccess" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Status Modal -->
+    <div id="paymentStatusModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full text-center p-6">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4" id="paymentStatusTitle">Aguardando Confirmação do Pagamento</h3>
+        <p class="text-gray-600 mb-4" id="paymentStatusText">Verificando status...Você será redirecionado</p>
+        <div class="text-blue-600 text-3xl animate-pulse mb-6">
+        <i id="paymentStatusIcon" class="fas fa-spinner fa-spin text-blue-600"></i>
+        </div>
+        <button id="closeStatusModal" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300">
+        Fechar
+        </button>
+    </div>
+    </div>
+
+    <script>
+        // Countdown Timer
+        const countdown = () => {
+            const endDate = new Date("Oct 04, 2025 00:00:00").getTime();
+            const now = new Date().getTime();
+            const distance = endDate - now;
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById("days").innerHTML = days.toString().padStart(2, "0");
+            document.getElementById("hours").innerHTML = hours.toString().padStart(2, "0");
+            document.getElementById("minutes").innerHTML = minutes.toString().padStart(2, "0");
+            document.getElementById("seconds").innerHTML = seconds.toString().padStart(2, "0");
+            
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("days").innerHTML = "00";
+                document.getElementById("hours").innerHTML = "00";
+                document.getElementById("minutes").innerHTML = "00";
+                document.getElementById("seconds").innerHTML = "00";
+            }
+        };
+        
+        const countdownInterval = setInterval(countdown, 1000);
+        countdown();
+        
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                const icon = question.querySelector('i');
+                
+                if (answer.classList.contains('hidden')) {
+                    answer.classList.remove('hidden');
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                } else {
+                    answer.classList.add('hidden');
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
+            });
+        });
+        
+        // Checkout Modal
+        const checkoutModal = document.getElementById('checkoutModal');
+        const openCheckout = document.getElementById('openCheckout');
+        const openCheckoutBottom = document.getElementById('openCheckoutBottom');
+        const closeCheckout = document.getElementById('closeCheckout');
+        
+        openCheckout.addEventListener('click', () => {
+            checkoutModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        openCheckoutBottom.addEventListener('click', () => {
+            checkoutModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeCheckout.addEventListener('click', () => {
+            checkoutModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Camiseta Selection
+        let selectedSize = null;
+
+        document.querySelectorAll('.camiseta-option').forEach(option => {
+        option.addEventListener('click', () => {
+            const size = option.getAttribute('data-size');
+
+            if (selectedSize === size) {
+            // Desmarcar
+            option.classList.remove('selected');
+            selectedSize = null;
+            } else {
+            // Marcar novo
+            document.querySelectorAll('.camiseta-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            option.classList.add('selected');
+            selectedSize = size;
+            }
+
+            updateTotal();
+        });
+        });
+        
+				
+        // Payment Method Selection
+        let selectedMethod = null;
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', () => {
+                document.querySelectorAll('.payment-method').forEach(m => {
+                    m.classList.remove('selected');
+                    m.querySelector('.checkmark').classList.add('hidden');
+                });
+                
+                method.classList.add('selected');
+                method.querySelector('.checkmark').classList.remove('hidden');
+                selectedMethod = method.getAttribute('data-method');
+                
+                // Show appropriate form
+                document.getElementById('creditCardForm').classList.add('hidden');
+                document.getElementById('pixForm').classList.add('hidden');
+                
+                if (selectedMethod === 'credit') {
+                    document.getElementById('creditCardForm').classList.remove('hidden');
+                } else if (selectedMethod === 'pix') {
+                    document.getElementById('pixForm').classList.remove('hidden');
+                }
+            });
+        });
+        
+        // Update Total Amount
+        function updateTotal() {
+            let total = 265; // Ingresso + taxa
+            
+            if (selectedSize) {
+                total += 50; // Camiseta
+            }
+            
+            document.getElementById('totalAmount').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            
+            // Update installments
+            const installmentsSelect = document.getElementById('cardInstallments');
+            installmentsSelect.innerHTML = '';
+            const maxInstallments = 2;
+            
+            for (let i = 1; i <= maxInstallments; i++) {
+                const installmentValue = total / i;
+                installmentsSelect.innerHTML += `<option value="${i}">${i}x de R$ ${installmentValue.toFixed(2).replace('.', ',')}</option>`;
+            }
+        }
+
+        // Garante que o script rode ao carregar a página
+        document.addEventListener('DOMContentLoaded', function () {
+            updateTotal();
+        });
+        
+        // CPF Mask
+        document.getElementById('cpf').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length > 3) {
+                value = value.substring(0, 3) + '.' + value.substring(3);
+            }
+            if (value.length > 7) {
+                value = value.substring(0, 7) + '.' + value.substring(7);
+            }
+            if (value.length > 11) {
+                value = value.substring(0, 11) + '-' + value.substring(11);
+            }
+            if (value.length > 14) {
+                value = value.substring(0, 14);
+            }
+            
+            e.target.value = value;
+        });
+        
+        // Phone Mask
+        document.getElementById('phoneFull').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length > 0) {
+                value = '(' + value.substring(0, 2) + ') ' + value.substring(2);
+            }
+            if (value.length > 10) {
+                value = value.substring(0, 10) + '-' + value.substring(10);
+            }
+            if (value.length > 15) {
+                value = value.substring(0, 15);
+            }
+            
+            e.target.value = value;
+        });
+        
+        // Card Number Mask
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            
+            if (value.length > 4) {
+                value = value.substring(0, 4) + ' ' + value.substring(4);
+            }
+            if (value.length > 9) {
+                value = value.substring(0, 9) + ' ' + value.substring(9);
+            }
+            if (value.length > 14) {
+                value = value.substring(0, 14) + ' ' + value.substring(14);
+            }
+            if (value.length > 19) {
+                value = value.substring(0, 19);
+            }
+            
+            e.target.value = value;
+        });
+        
+        // Máscara e validação para cardExpiry no formato MM/AAAA
+        document.getElementById('cardExpiry').addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        const currentYear = new Date().getFullYear();
+
+        if (value.length > 2) {
+            const month = parseInt(value.substring(0, 2), 10);
+            const year = parseInt(value.substring(2, 6), 10);
+
+            // Validação do mês
+            if (month < 1 || month > 12) {
+            console.warn('Mês inválido.');
+            e.target.setCustomValidity('Mês inválido (01 a 12)');
+            } else {
+            e.target.setCustomValidity('');
+            }
+
+            // Validação do ano
+            if (value.length >= 6 && year < currentYear) {
+            console.warn('Ano inválido. Não pode ser anterior ao ano atual.');
+            e.target.setCustomValidity('Ano não pode ser anterior ao atual.');
+            } else if (month >= 1 && month <= 12) {
+            e.target.setCustomValidity('');
+            }
+
+            value = value.substring(0, 2) + '/' + value.substring(2, 6);
+        }
+
+        e.target.value = value.substring(0, 7); // Formato final MM/AAAA
+        });
+        
+        // Form Submission
+        document.addEventListener('DOMContentLoaded', () => {
+        
+        // Seleciona o tamanho da camisa e preenche o shirtSize com comportamento de toggle
+        document.querySelectorAll('.camiseta-option').forEach(button => {
+        button.addEventListener('click', () => {
+            const size = button.getAttribute('data-size');
+            const shirtInput = document.getElementById('shirtSize');
+
+            // Se já está selecionado, desmarcar
+            if (shirtInput.value === size) {
+            shirtInput.value = '';
+
+            button.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+            button.classList.add('border-gray-300');
+            } else {
+            // Resetar estilos anteriores
+            document.querySelectorAll('.camiseta-option').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+                btn.classList.add('border-gray-300');
+            });
+
+            // Selecionar o novo
+            shirtInput.value = size;
+            button.classList.add('bg-blue-600', 'border-blue-600');
+            button.classList.remove('border-gray-300');
+            }
+
+            updateTotal(); // Atualiza o valor total conforme a seleção
+        });
+        });
+        
+        // Salva o data-method clicado no campo oculto paymentMethod
+        document.querySelectorAll('.payment-method').forEach(button => {
+        button.addEventListener('click', () => {
+            const method = button.getAttribute('data-method');
+            const paymentInput = document.getElementById('paymentMethod');
+
+            if (paymentInput) {
+            paymentInput.value = method;
+            }
+
+            // Remove destaque anterior e esconde checkmark
+            document.querySelectorAll('.payment-method').forEach(btn => {
+            btn.classList.remove('border-blue-600');
+            btn.querySelector('.checkmark')?.classList.add('hidden');
+            });
+
+            // Adiciona destaque ao selecionado
+            button.classList.add('border-blue-600');
+            button.querySelector('.checkmark')?.classList.remove('hidden');
+
+            // Mostra ou oculta os formulários conforme método selecionado
+            document.getElementById('creditCardForm')?.classList.add('hidden');
+            document.getElementById('pixForm')?.classList.add('hidden');
+
+            if (method === 'CREDIT_CARD') {
+            document.getElementById('creditCardForm')?.classList.remove('hidden');
+            } else if (method === 'PIX') {
+            document.getElementById('pixForm')?.classList.remove('hidden');
+            }
+        });
+        });
+        
+            const form = document.getElementById('checkoutForm');
+        
+        if (!form) {
+            console.error('Formulário com id "checkoutForm" não encontrado!');
+            return;
+        }
+
+        document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            const termsAccepted = document.getElementById('terms').checked;
+
+            if (!paymentMethod) {
+            alert('Por favor, selecione uma forma de pagamento');
+            return;
+            }
+
+            if (!termsAccepted) {
+            alert('Por favor, aceite os termos');
+            return;
+            }
+
+            const totalText = document.getElementById('totalAmount').textContent;
+            const numericTotal = parseFloat(totalText.replace('R$', '').replace(',', '.').trim());
+
+            const data = {
+            fullName: document.getElementById('fullName').value,
+            cpf: document.getElementById('cpf').value,
+            emailFull: document.getElementById('emailFull').value,
+            phoneFull: document.getElementById('phoneFull').value,
+            paymentMethod,
+            shirtSize: document.getElementById('shirtSize').value || null,
+            totalAmount: numericTotal,
+            cardNumber: document.getElementById('cardNumber')?.value,
+            cardExpiry: document.getElementById('cardExpiry')?.value,
+            cardCvv: document.getElementById('cardCvv')?.value,
+            cardInstallments: document.getElementById('cardInstallments')?.value
+            };
+
+            // Exibe o modal imediatamente
+            abrirModalStatus('Processando sua compra...');
+
+            try {
+            const res = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+
+            if (result.success && result.paymentId) {
+                localStorage.setItem('paymentId', result.paymentId);
+                window.open(result.invoiceUrl, '_blank');
+                abrirModalStatus('Aguardando confirmação do pagamento...');
+            } else {
+                alert('Erro: pagamento não iniciado.');
+                console.error('Resposta inválida da API:', result);
+            }
+            } catch (err) {
+            console.error('Erro ao enviar dados:', err);
+            alert('Erro inesperado na requisição');
+            }
+        });
+
+        // Exibe modal de status
+        function abrirModalStatus(mensagemInicial) {
+            document.getElementById('paymentStatusModal').classList.remove('hidden');
+            document.getElementById('paymentStatusText').textContent = mensagemInicial || 'Verificando status...';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function fecharModalStatus() {
+            document.getElementById('paymentStatusModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Botão "Fechar" apenas esconde o modal (sem polling)
+        document.getElementById('closeStatusModal').addEventListener('click', () => {
+        // Fecha o modal de status
+        const paymentStatusModal = document.getElementById('paymentStatusModal');
+        if (paymentStatusModal) {
+            paymentStatusModal.style.display = 'none'; // ou .classList.remove('show'), dependendo do estilo/modal
+        }
+
+        // Fecha o formulário de checkout
+        const checkoutForm = document.getElementById('checkoutForm');
+        if (checkoutForm) {
+            checkoutForm.style.display = 'none';
+        }
+
+        // Recarrega a página
+        location.reload();
+        });
+
+        });
+    </script>
+</body>
+</html>
